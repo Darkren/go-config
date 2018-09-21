@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"time"
 
-	"github.com/Darkren/go-config/config"
+	config "github.com/Darkren/go-config"
 )
 
 // Config represents data type for configuration
