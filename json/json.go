@@ -4,6 +4,7 @@ package json
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"time"
 
@@ -36,6 +37,10 @@ func Load(filePath string) (config.Config, error) {
 // within configuration
 func (c Config) Section(key string) (config.Config, error) {
 	section := Config{}
+
+	if _, ok := c.c[key]; !ok {
+		return nil, fmt.Errorf("section %s not present in config", key)
+	}
 
 	if err := json.Unmarshal(*(c.c[key]), &(section.c)); err != nil {
 		return nil, err
@@ -110,6 +115,52 @@ func (c Config) MustGetTime(key string) time.Time {
 	return value
 }
 
+// GetDuration tries to get time.Duration value by key from configuration.
+// The value must be a valid string to be parsed by standard methods. Returns
+// acquired value or the specified default value
+func (c Config) GetDuration(key string, defaultVal time.Duration) time.Duration {
+	value, err := c.getDuration(key)
+	if err != nil {
+		return defaultVal
+	}
+
+	return value
+}
+
+// MustGetDuration tries to get time.Duration value by key from configuration.
+// The value must be a valid string to be parsed by standard methods. Returns
+// acquired value or panics in case of any error
+func (c Config) MustGetDuration(key string) time.Duration {
+	value, err := c.getDuration(key)
+	if err != nil {
+		panic(err)
+	}
+
+	return value
+}
+
+// GetStringSlice tries to get the string slice value by key from configuration.
+// Returns acquired value of the specified default value
+func (c Config) GetStringSlice(key string, defaultVal []string) []string {
+	value, err := c.getStringSlice(key)
+	if err != nil {
+		return defaultVal
+	}
+
+	return value
+}
+
+// GetStringSlice tries to get the string slice value by key from configuration.
+// Returns acquired value of panics in case of any error
+func (c Config) MustGetStringSlice(key string) []string {
+	value, err := c.getStringSlice(key)
+	if err != nil {
+		panic(err)
+	}
+
+	return value
+}
+
 func new(jsonData []byte) (config.Config, error) {
 	config := Config{}
 
@@ -149,6 +200,30 @@ func (c Config) getTime(key string) (time.Time, error) {
 	value, err := time.Parse("2.1.2006", valueStr)
 	if err != nil {
 		return time.Now(), err
+	}
+
+	return value, nil
+}
+
+func (c Config) getDuration(key string) (time.Duration, error) {
+	valueStr, err := c.getString(key)
+	if err != nil {
+		return time.Nanosecond, err
+	}
+
+	value, err := time.ParseDuration(valueStr)
+	if err != nil {
+		return time.Nanosecond, err
+	}
+
+	return value, nil
+}
+
+func (c Config) getStringSlice(key string) ([]string, error) {
+	var value []string
+
+	if err := json.Unmarshal(*(c.c[key]), &value); err != nil {
+		return nil, err
 	}
 
 	return value, nil
