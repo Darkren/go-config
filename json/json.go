@@ -140,7 +140,7 @@ func (c Config) MustGetDuration(key string) time.Duration {
 }
 
 // GetStringSlice tries to get the string slice value by key from configuration.
-// Returns acquired value of the specified default value
+// Returns acquired value or the specified default value
 func (c Config) GetStringSlice(key string, defaultVal []string) []string {
 	value, err := c.getStringSlice(key)
 	if err != nil {
@@ -151,9 +151,31 @@ func (c Config) GetStringSlice(key string, defaultVal []string) []string {
 }
 
 // GetStringSlice tries to get the string slice value by key from configuration.
-// Returns acquired value of panics in case of any error
+// Returns acquired value or panics in case of any error
 func (c Config) MustGetStringSlice(key string) []string {
 	value, err := c.getStringSlice(key)
+	if err != nil {
+		panic(err)
+	}
+
+	return value
+}
+
+// GetBool tries to get bool value by key from configuration.
+// Returns acquired value or the specified default value
+func (c Config) GetBool(key string, defaultVal bool) bool {
+	value, err := c.getBool(key)
+	if err != nil {
+		return defaultVal
+	}
+
+	return value
+}
+
+// MustGetBool tries to get bool value by key from configuration.
+// Returns acquired value or panics in case of any error
+func (c Config) MustGetBool(key string) bool {
+	value, err := c.getBool(key)
 	if err != nil {
 		panic(err)
 	}
@@ -169,6 +191,16 @@ func new(jsonData []byte) (config.Config, error) {
 	}
 
 	return config, nil
+}
+
+func (c Config) getBool(key string) (bool, error) {
+	var value bool
+
+	if err := json.Unmarshal(*(c.c[key]), &value); err != nil {
+		return false, err
+	}
+
+	return value, nil
 }
 
 func (c Config) getString(key string) (string, error) {
