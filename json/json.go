@@ -49,6 +49,17 @@ func (c Config) Section(key string) (config.Config, error) {
 	return section, nil
 }
 
+// SectionAsJSON returns config section as JSON string. Used for nested objects
+// within configuration
+func (c Config) SectionAsJSON(key string) (string, error) {
+	sectionBytes, ok := c.c[key]
+	if !ok {
+		return "", fmt.Errorf("section %s not present in config", key)
+	}
+
+	return string(*sectionBytes), nil
+}
+
 // GetString tries to get string value by key from configuration.
 // Returns acquired value or the specified default value
 func (c Config) GetString(key string, defaultVal string) string {
