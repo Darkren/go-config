@@ -104,6 +104,28 @@ func (c Config) MustGetInt(key string) int {
 	return value
 }
 
+// GetUint64 tries to get uint64 value by key from configuration.
+// Returns acquired value or the specified default value
+func (c Config) GetUint64(key string, defaultVal uint64) uint64 {
+	value, err := c.getUint64(key)
+	if err != nil {
+		return defaultVal
+	}
+
+	return value
+}
+
+// MustGetUint64 tries to get uint64 value by key from configuration.
+// Returns acquired value or panics in case of any error
+func (c Config) MustGetUint64(key string) uint64 {
+	value, err := c.getUint64(key)
+	if err != nil {
+		panic(err)
+	}
+
+	return value
+}
+
 // GetTime tries to get time.Time value by key from configuration.
 // Returns acquired value or the specified default value
 func (c Config) GetTime(key string, defaultVal time.Time) time.Time {
@@ -226,6 +248,16 @@ func (c Config) getString(key string) (string, error) {
 
 func (c Config) getInt(key string) (int, error) {
 	var value int
+
+	if err := json.Unmarshal(*(c.c[key]), &value); err != nil {
+		return 0, err
+	}
+
+	return value, nil
+}
+
+func (c Config) getUint64(key string) (uint64, error) {
+	var value uint64
 
 	if err := json.Unmarshal(*(c.c[key]), &value); err != nil {
 		return 0, err

@@ -11,6 +11,8 @@ type Config interface {
 	MustGetString(key string) string
 	GetInt(key string, defaultVal int) int
 	MustGetInt(key string) int
+	GetUint64(key string, defaultVal uint64) uint64
+	MustGetUint64(key string) uint64
 	GetTime(key string, defaultVal time.Time) time.Time
 	MustGetTime(key string) time.Time
 	GetDuration(key string, defaultVal time.Duration) time.Duration
