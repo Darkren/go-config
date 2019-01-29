@@ -229,6 +229,10 @@ func new(jsonData []byte) (config.Config, error) {
 func (c Config) getBool(key string) (bool, error) {
 	var value bool
 
+	if _, ok := c.c[key]; !ok {
+		return false, fmt.Errorf("key %s was not found in the config", key)
+	}
+
 	if err := json.Unmarshal(*(c.c[key]), &value); err != nil {
 		return false, err
 	}
@@ -238,6 +242,10 @@ func (c Config) getBool(key string) (bool, error) {
 
 func (c Config) getString(key string) (string, error) {
 	var value string
+
+	if _, ok := c.c[key]; !ok {
+		return "", fmt.Errorf("key %s was not found in the config", key)
+	}
 
 	if err := json.Unmarshal(*(c.c[key]), &value); err != nil {
 		return "", err
@@ -249,6 +257,10 @@ func (c Config) getString(key string) (string, error) {
 func (c Config) getInt(key string) (int, error) {
 	var value int
 
+	if _, ok := c.c[key]; !ok {
+		return 0, fmt.Errorf("key %s was not found in the config", key)
+	}
+
 	if err := json.Unmarshal(*(c.c[key]), &value); err != nil {
 		return 0, err
 	}
@@ -258,6 +270,10 @@ func (c Config) getInt(key string) (int, error) {
 
 func (c Config) getUint64(key string) (uint64, error) {
 	var value uint64
+
+	if _, ok := c.c[key]; !ok {
+		return 0, fmt.Errorf("key %s was not found in the config", key)
+	}
 
 	if err := json.Unmarshal(*(c.c[key]), &value); err != nil {
 		return 0, err
@@ -296,6 +312,10 @@ func (c Config) getDuration(key string) (time.Duration, error) {
 
 func (c Config) getStringSlice(key string) ([]string, error) {
 	var value []string
+
+	if _, ok := c.c[key]; !ok {
+		return nil, fmt.Errorf("key %s was not found in the config", key)
+	}
 
 	if err := json.Unmarshal(*(c.c[key]), &value); err != nil {
 		return nil, err
