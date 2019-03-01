@@ -12,7 +12,7 @@ func TestNew(t *testing.T) {
 				"birthday": "12.09.2018"
 			}`
 
-	if _, err := new([]byte(test)); err != nil {
+	if _, err := newConf([]byte(test)); err != nil {
 		t.Errorf("Got err parsing %v", test)
 	}
 
@@ -31,7 +31,7 @@ func TestNew(t *testing.T) {
 				]
 			}`
 
-	if _, err := new([]byte(test)); err != nil {
+	if _, err := newConf([]byte(test)); err != nil {
 		t.Errorf("Got err parsing %v", test)
 	}
 
@@ -48,7 +48,7 @@ func TestNew(t *testing.T) {
 				}
 			]`
 
-	if _, err := new([]byte(test)); err == nil {
+	if _, err := newConf([]byte(test)); err == nil {
 		t.Errorf("Got err parsing %v", test)
 	}
 
@@ -63,7 +63,7 @@ func TestNew(t *testing.T) {
 				}
 			}`
 
-	if _, err := new([]byte(test)); err != nil {
+	if _, err := newConf([]byte(test)); err != nil {
 		t.Errorf("Got err parsing %v", test)
 	}
 
@@ -71,7 +71,7 @@ func TestNew(t *testing.T) {
 				qwe: "qwe"
 			}`
 
-	if _, err := new([]byte(test)); err == nil {
+	if _, err := newConf([]byte(test)); err == nil {
 		t.Errorf("Got err parsing %v", test)
 	}
 }
@@ -88,7 +88,7 @@ func TestSection(t *testing.T) {
 		}
 	}`
 
-	config, err := new([]byte(test))
+	config, err := newConf([]byte(test))
 	if err != nil {
 		t.Errorf("Got err parsing %v", test)
 	}
@@ -111,7 +111,7 @@ func TestGetString(t *testing.T) {
 		}
 	}`
 
-	config, err := new([]byte(test))
+	config, err := newConf([]byte(test))
 	if err != nil {
 		t.Errorf("Got err parsing %v", test)
 	}
@@ -141,7 +141,7 @@ func TestGetInt(t *testing.T) {
 		}
 	}`
 
-	config, err := new([]byte(test))
+	config, err := newConf([]byte(test))
 	if err != nil {
 		t.Errorf("Got err parsing %v", test)
 	}
@@ -171,7 +171,7 @@ func TestGetTime(t *testing.T) {
 		}
 	}`
 
-	config, err := new([]byte(test))
+	config, err := newConf([]byte(test))
 	if err != nil {
 		t.Errorf("Got err parsing %v", test)
 	}
@@ -197,7 +197,7 @@ func TestGetDuration(t *testing.T) {
 		"to_pay_in": "30m"
 	}`
 
-	config, err := new([]byte(test))
+	config, err := newConf([]byte(test))
 	if err != nil {
 		t.Errorf("Got err parsing %v", test)
 	}
@@ -230,7 +230,7 @@ func TestGetStringSlice(t *testing.T) {
 		]
 	}`
 
-	config, err := new([]byte(test))
+	config, err := newConf([]byte(test))
 	if err != nil {
 		t.Errorf("Got err parsing %v", err)
 	}
@@ -247,6 +247,6 @@ func TestGetStringSlice(t *testing.T) {
 
 	if len(nicknames) != len(want) || nicknames[0] != want[0] ||
 		nicknames[1] != want[1] || nicknames[2] != want[2] {
-			t.Errorf("Got %v, want %v", nicknames, want)
+		t.Errorf("Got %v, want %v", nicknames, want)
 	}
 }
